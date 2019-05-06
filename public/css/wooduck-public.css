@@ -1,0 +1,54 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+
+/* mobile css */
+
+@media(max-width:600px){
+#single_add_to_cart_button{
+	margin:5px auto!important;
+	}
+.single_variation_wrap {	
+	}
+
+
+
+}
+/*end mobile css*/
+
+
+.left_free{
+	text-align: center;
+    background: #F7F6F7;
+    padding: 25px 0;
+    margin-bottom: 20px;
+    box-shadow: #00000063 1px 1px 10px;
+}
+
+
+
+.back_to_stor {
+     background: #d2aa41!important;
+    padding: 5px 15px;
+    margin-right: 5px;
+    color: #fff!important;
+    float: left!important;
+}
+
+
+.single_variation_wrap {
+	display: inline-block;
+	margin-left:5px!important;
+
+}
+#single_add_to_cart_button{
+	display:inline-block;
+	
+
+}
+
+#single_add_to_cart_button.single_add_to_cart_button.button.alt.disabled.wc-variation-selection-needed {
+	background-color:#000!important;
+}
