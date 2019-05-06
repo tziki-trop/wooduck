@@ -110,11 +110,34 @@ class Wooduck_Admin {
 	//call register settings function
 	add_action( 'admin_init', [ $this,'register_plugin_settings'] );
 }
+public function remove_woo_fields($fields){
+	$woo_filds = $this->get_woo_fields();
+	foreach ($woo_filds['fields_types'] as $fields_type) {
+		foreach ($woo_filds['fields'] as $field) {
+			$hide = get_option($fields_type."__".$fields_type."_".$field) ? true : false;
+			if($hide)
+			unset($fields[$fields_type][$fields_type."_".$field]);
+			}
+	}
+	return $fields;
+}
+	protected function get_woo_fields(){
+		$fields = array('first_name','last_name','company','address_1','address_2','city','postcode','country','state','phone','email');
+		$fields_types = array('billing','shipping');
+		return array("fields" => $fields,"fields_types" => $fields_types);
+	}
 	public function register_plugin_settings() {
-    register_setting('WebDuck_Settings', 'free_shiping' );
-
+	register_setting('WebDuck_Settings', 'free_shiping' );
+	
+	$woo_filds = $this->get_woo_fields();
+	foreach ($woo_filds['fields_types'] as $fields_type) {
+		foreach ($woo_filds['fields'] as $field) {
+			register_setting('WebDuck_Settings_Woo_Fields',  $fields_type."__".$fields_type."_".$field);
+		}
+	}
 }
 	public function main_settings_page() {
+		$woo_filds = $this->get_woo_fields();
 		?>
 		<div class="wrap">
 		<h1><?php  echo __( 'WebDuck Settings', 'client_to_google_sheet' ); ?></h1>
@@ -125,8 +148,46 @@ class Wooduck_Admin {
 			<table class="form-table">
 				<tr valign="top">
 				<th scope="row"><?php  echo __( 'free shiping emount', 'client_to_google_sheet' ); ?></th>
-				<td><input type="text" name="free_shiping" value="<?php echo esc_attr( get_option('free_shiping') ); ?>" /></td>
+				<td><input type="text" name="free_shiping" value="<?php echo esc_attr( get_option('free_shiping') ); ?>"  /></td>
 				</tr>
+			</table>
+
+			<?php submit_button(); ?>
+
+		</form>
+		<div>
+	
+		<?php
+	//	var_dump($woo_filds);
+		foreach ($woo_filds['fields_types'] as $fields_type) {
+			?>
+			<div style="display: inline-block;width: 49%;">
+		<p><?php  echo __( 'איזה שדות תרצה להסתיר?', 'client_to_google_sheet' ); ?></p>
+		<p><?php  echo $fields_type; ?></p>
+
+		
+		<form method="post" action="options.php">
+			<?php settings_fields( 'WebDuck_Settings_Woo_Fields' ); ?>
+			<?php do_settings_sections( 'WebDuck_Settings_Woo_Fields' ); ?>
+			<table class="form-table">
+			<?php
+			foreach ($woo_filds['fields'] as $field) {
+				$cheked = get_option($fields_type."__".$fields_type."_".$field) ? "checked" : "";
+				//var_dump($cheked);
+			
+				?>
+		
+
+				<tr valign="top">
+				<th>
+				<input type="checkbox"
+				 name="<?php echo $fields_type."__".$fields_type."_".$field; ?>" <?php echo $cheked; ?>/></td>
+				<th scope="row"><?php  echo $field; ?></th>
+				</tr>
+				<?php
+			}
+		
+				?>
 			</table>
 
 			<?php submit_button(); ?>
@@ -134,5 +195,8 @@ class Wooduck_Admin {
 		</form>
 		</div>
 		<?php
+			}
+		
+		
 	}
 }

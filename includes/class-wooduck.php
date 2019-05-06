@@ -158,7 +158,9 @@ class Wooduck {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         //add_action('admin_menu', [$this,'create_menu_page']);
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_menu_page' );
-
+		
+		add_filter( 'woocommerce_checkout_fields' , [$plugin_admin,'remove_woo_fields'] );
+ 
 	}
 
 	/**
